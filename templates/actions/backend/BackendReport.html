@@ -1,0 +1,10 @@
+<table border="1">
+<tr>
+<td><b>Продвигаемая страница</b></td><td><b>Страница сайта на которой размещается ссылка</b></td><td><b>Ключевое слово</b></td>
+</tr>
+{foreach from=$seoreferencelinks item=seoreferencelink}
+<tr>
+<td>{$seoreferencelink.link}</td><td>{$seoreferencelink.page}</td><td>{$seoreferencelink.keywords}</td>
+</tr>
+{/foreach}
+</table>
