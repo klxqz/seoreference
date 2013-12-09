@@ -131,10 +131,10 @@ class shopSeoreferencePlugin extends shopPlugin {
     public static function display() {
         $app_settings_model = new waAppSettingsModel();
         $seoreferencelinks_model = new shopSeoreferencePluginLinksModel();
-        $domen = wa()->getRouting()->getDomain(null, true);
+        $domain = wa()->getRouting()->getDomain(null, true);
         $https = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : '';
         $page = 'http' . (strtolower($https) == 'on' ? 's' : '') . '://';
-        $page .= wa()->getRouting()->getDomainUrl($domen) . '/' . wa()->getConfig()->getRequestUrl();
+        $page .= wa()->getRouting()->getDomainUrl($domain) . '/' . wa()->getConfig()->getRequestUrl();
 
         $result = $seoreferencelinks_model->getByField('page', $page);
         if ($result) {

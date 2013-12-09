@@ -14,7 +14,7 @@ $(document).ready(function(){
     $('.add-but').click(function(){
         $('.seoreference_table').append(
         '<tr><td>\
-            <input type="text" size="80" name="link[]" />\
+            <input type="text" name="link[]" />\
         </td><td>\
             <textarea cols="60" rows="2" name="keywords[]"></textarea><p class="gray">Ключевые слова вводятся через запятую</p>\
         </td><td>\
@@ -79,7 +79,7 @@ $(document).ready(function(){
     
     <div class="clear"></div>
     <p>
-    Количество страниц: {$count_page}
+        Количество страниц для домена <b>{$domain}</b>: {$count_page}
     </p>
     
     <table class="seoreference_table">
@@ -89,7 +89,7 @@ $(document).ready(function(){
     {foreach from=$rows item=row}
     <tr>
     <td>
-    <input type="text" size="80" name="link[]" value="{$row.link|escape}"  />
+    <input type="text"  name="link[]" value="{$row.link|escape}"  />
     </td>
     <td>
     <textarea cols="60" rows="2" name="keywords[]">{$row.keywords|escape}</textarea>
