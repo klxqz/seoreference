@@ -8,17 +8,16 @@ class shopSeoreferencePluginSettingsAction extends waViewAction {
 
     public function execute() {
         $seoreference = wa()->getPlugin('seoreference');
-        $urls = $seoreference->getSiteMap();
-        $domain = wa()->getRouting()->getDomain(null, true);
+        $domains_urls = $seoreference->getSiteMap();
         $seoreference_model = new shopSeoreferencePluginModel();
         $rows = $seoreference_model->getAll();
 
         $settings = $seoreference->getSettings();
 
-        $this->view->assign('count_page', count($urls));
-        $this->view->assign('domain', $domain);
+        $this->view->assign('domains_urls', $domains_urls);
         $this->view->assign('rows', $rows);
         $this->view->assign('settings', $settings);
+        waSystem::popActivePlugin();
     }
 
 }
