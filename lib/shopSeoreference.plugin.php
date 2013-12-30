@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @author Коробонв Николай wa-plugins.ru <support@wa-plugins.ru>
+ * @author Коробов Николай wa-plugins.ru <support@wa-plugins.ru>
  * @link http://wa-plugins.ru/
  */
 class shopSeoreferencePlugin extends shopPlugin {
@@ -105,26 +105,28 @@ class shopSeoreferencePlugin extends shopPlugin {
         $seoreference_model = new shopSeoreferencePluginModel();
         $seoreferencelinks_model = new shopSeoreferencePluginLinksModel();
 
-
-        $pages = $this->getSiteMap();
-        $rows = $seoreference_model->getAll();
-
         $seoreferencelinks_model->deleteAll();
 
-        foreach ($rows as $row) {
-            $keywords = explode(',', $row['keywords']);
-            foreach ($keywords as $index => $_keywords) {
-                if (!trim($_keywords)) {
-                    unset($keywords[$index]);
-                }
-            }
 
-            for ($i = 0; $i < $row['count']; $i++) {
-                $k_index = $i % count($keywords);
-                $_keywords = $keywords[$k_index];
-                $page = array_pop($pages);
-                $data = array('link' => $row['link'], 'keywords' => $_keywords, 'page' => $page);
-                $seoreferencelinks_model->insert($data);
+        $domain_pages = $this->getSiteMap();
+        foreach ($domain_pages as $domain => $pages) {
+            $rows = $seoreference_model->getByField('domain', $domain, true);
+
+            foreach ($rows as $row) {
+                $keywords = explode(',', $row['keywords']);
+                foreach ($keywords as $index => $_keywords) {
+                    if (!trim($_keywords)) {
+                        unset($keywords[$index]);
+                    }
+                }
+
+                for ($i = 0; $i < $row['count']; $i++) {
+                    $k_index = $i % count($keywords);
+                    $_keywords = $keywords[$k_index];
+                    $page = array_pop($pages);
+                    $data = array('link' => $row['link'], 'keywords' => $_keywords, 'page' => $page);
+                    $seoreferencelinks_model->insert($data);
+                }
             }
         }
     }

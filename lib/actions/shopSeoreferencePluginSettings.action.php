@@ -1,21 +1,28 @@
 <?php
 
 /**
- * @author Коробонв Николай wa-plugins.ru <support@wa-plugins.ru>
+ * @author Коробов Николай wa-plugins.ru <support@wa-plugins.ru>
  * @link http://wa-plugins.ru/
  */
 class shopSeoreferencePluginSettingsAction extends waViewAction {
 
     public function execute() {
         $seoreference = wa()->getPlugin('seoreference');
-        $domains_urls = $seoreference->getSiteMap();
+        $sitemap = $seoreference->getSiteMap();
         $seoreference_model = new shopSeoreferencePluginModel();
         $rows = $seoreference_model->getAll();
 
+        $domain_rows = array();
+        foreach ($sitemap as $domain => $urls) {
+            $domain_rows[$domain] = array();
+        }
+        foreach ($rows as $row) {
+            $domain_rows[$row['domain']][] = $row;
+        }
         $settings = $seoreference->getSettings();
 
-        $this->view->assign('domains_urls', $domains_urls);
-        $this->view->assign('rows', $rows);
+        $this->view->assign('sitemap', $sitemap);
+        $this->view->assign('domain_rows', $domain_rows);
         $this->view->assign('settings', $settings);
         waSystem::popActivePlugin();
     }

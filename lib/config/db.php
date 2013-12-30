@@ -1,11 +1,12 @@
 <?php
 
 /**
- * @author Коробонв Николай wa-plugins.ru <support@wa-plugins.ru>
+ * @author Коробов Николай wa-plugins.ru <support@wa-plugins.ru>
  * @link http://wa-plugins.ru/
  */
 return array(
     'shop_seoreference' => array(
+        'domain' => array('varchar', 255, 'null' => 0, 'default' => ''),
         'link' => array('varchar', 255, 'null' => 0, 'default' => ''),
         'keywords' => array('text', 'null' => 0),
         'count' => array('int', 11, 'null' => 0),

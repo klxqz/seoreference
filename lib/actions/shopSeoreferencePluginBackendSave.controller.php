@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @author Коробонв Николай wa-plugins.ru <support@wa-plugins.ru>
+ * @author Коробов Николай wa-plugins.ru <support@wa-plugins.ru>
  * @link http://wa-plugins.ru/
  */
 class shopSeoreferencePluginBackendSaveController extends waJsonController {
@@ -11,6 +11,7 @@ class shopSeoreferencePluginBackendSaveController extends waJsonController {
             $link = waRequest::post('link', array());
             $keywords = waRequest::post('keywords', array());
             $count = waRequest::post('count', array());
+            $domains = waRequest::post('domains', array());
 
             $app_settings_model = new waAppSettingsModel();
             $shop_seoreference = waRequest::post('shop_seoreference');
@@ -19,61 +20,65 @@ class shopSeoreferencePluginBackendSaveController extends waJsonController {
                 $app_settings_model->set(array('shop', 'seoreference'), $setting, $value);
             }
 
-
-            foreach ($link as $_link) {
-                if (!trim($_link)) {
-                    throw new waException('Поле "Продвигаемая страница" обязательно для заполнения');
-                }
+            $link = array_map('trim', $link);
+            if (($key = array_search('', $link)) !== false) {
+                throw new waException('Поле "Продвигаемая страница" обязательно для заполнения. Домен ' . $domains[$key]);
             }
 
-            foreach ($keywords as $_keywords) {
-                if (!trim($_keywords)) {
-                    throw new waException('Поле "Ключевые слова" обязательно для заполнения');
+            $keywords = array_map('trim', $keywords);
+            if (($key = array_search('', $keywords)) !== false) {
+                throw new waException('Поле "Ключевые слова" обязательно для заполнения. Домен ' . $domains[$key]);
+            }
+
+
+            $domain_count = array();
+            foreach ($domains as $index => $domain) {
+                if (!isset($domain_count[$domain])) {
+                    $domain_count[$domain] = isset($count[$index]) && intval($count[$index]) ? $count[$index] : 0;
+                } else {
+                    $domain_count[$domain] += isset($count[$index]) && intval($count[$index]) ? $count[$index] : 0;
                 }
             }
 
             $seoreference = wa()->getPlugin('seoreference');
-            $urls = $seoreference->getSiteMap();
-            $urls_count = count($urls);
+            $domains_url = $seoreference->getSiteMap();
 
-            $sum = 0;
-            foreach ($count as $_count) {
-                $sum += $_count;
+            foreach ($domain_count as $domain => $_count) {
+                if ($_count > count($domains_url[$domain])) {
+                    throw new waException('Суммарное количество генерируемых ссылок не должно превышать количество страниц домена ' . $domain
+                    . '. Максимальное количество ссылок для домена ' . $domain . ': ' . count($domains_url[$domain]));
+                }
             }
-
-            if ($sum > $urls_count) {
-                throw new waException('Суммарное количество генерируемых ссылок не должно превышать количество страниц сайта');
-            }
-
-
-
 
             $seoreference_model = new shopSeoreferencePluginModel();
             $seoreference_model->deleteAll();
 
-            $items = array();
+            $domain_items = array();
 
             foreach ($link as $index => $_link) {
                 $_keywords = $keywords[$index];
                 $_count = $count[$index];
-                $data = array('link' => $_link, 'keywords' => $_keywords, 'count' => $_count);
+                $_domain = $domains[$index];
+                $data = array('domain' => $_domain, 'link' => $_link, 'keywords' => $_keywords, 'count' => $_count);
                 if (!$_count) {
-                    $items[] = $data;
+                    $domain_items[$_domain][] = $data;
                     continue;
                 }
                 $seoreference_model->insert($data);
             }
 
-            $free_pages = $urls_count - $sum;
-            $count_items = count($items);
-            foreach ($items as $data) {
-                $_count = ceil($free_pages / $count_items);
-                $data['count'] = $_count;
-                $seoreference_model->insert($data);
-                $count_items--;
-                $free_pages -=$_count;
-            }
+            foreach ($domain_items as $domain => $items) {
 
+                $free_pages = count($domains_url[$domain]) - $domain_count[$domain];
+                $count_items = count($items);
+                foreach ($items as $data) {
+                    $_count = ceil($free_pages / $count_items);
+                    $data['count'] = $_count;
+                    $seoreference_model->insert($data);
+                    $count_items--;
+                    $free_pages -=$_count;
+                }
+            }
             $seoreference->ranging();
 
             $this->response['message'] = "Ok";

@@ -15,7 +15,7 @@
             var domain = $(this).closest('.domain_block').find('.domain_id').val();
             $(this).closest('.domain_block').find('.seoreference_table').append(
                     '<tr><td>\
-            <input type="text" name="domains[]" value="' + domain + '" />\
+            <input type="hidden" name="domains[]" value="' + domain + '" />\
             <input type="text" name="link[]" />\
         </td><td>\
             <textarea cols="60" rows="2" name="keywords[]"></textarea><p class="gray">Ключевые слова вводятся через запятую</p>\
@@ -80,7 +80,7 @@
 
 
         <div class="clear"></div>
-        {foreach $domains_urls as $domain => $urls}
+        {foreach $sitemap as $domain => $urls}
         <div class="domain_block">
             <input type="hidden" class="domain_id" value="{$domain}"/>
             <h2>Поселение: {$domain}</h2>
@@ -92,7 +92,7 @@
                 <tr>
                     <td>Продвигаемая страница</td><td>Ключевые слова</td><td>Количество генерируемых ссылок</td>
                 </tr>
-                {foreach from=$rows item=row}
+                {foreach from=$domain_rows[$domain] item=row}
                 <tr>
                     <td>
                         <input type="hidden" name="domains[]" value="{$domain}" />
@@ -114,9 +114,11 @@
 
             <a href="javascript:void(0);" class="add-but"><i class="icon16 add s-new-list"></i>Добавить</a>
         </div>
+        <hr>
         {/foreach}
 
-        <a target="_blank" href="?plugin=seoreference&action=report"><i class="icon16 notebook"></i>Отчет</a>
+        <p><a target="_blank" href="?plugin=seoreference&action=report"><i class="icon16 notebook"></i>Отчет</a></p>
+
 
 
 

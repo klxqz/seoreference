@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @author Коробонв Николай wa-plugins.ru <support@wa-plugins.ru>
+ * @author Коробов Николай wa-plugins.ru <support@wa-plugins.ru>
  * @link http://wa-plugins.ru/
  */
 return array(
@@ -9,7 +9,7 @@ return array(
     'description' => 'Проводит Seo оптимизацию',
     'img' => 'img/seoreference.png',
     'vendor' => '985310',
-    'version' => '1.0.0',
+    'version' => '1.0.1',
     'rights' => false,
     'shop_settings' => true,
     'handlers' => array(
