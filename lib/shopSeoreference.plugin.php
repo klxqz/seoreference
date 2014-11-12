@@ -196,11 +196,13 @@ class shopSeoreferencePlugin extends shopPlugin {
         $app_settings_model = new waAppSettingsModel();
         $seoreferencelinks_model = new shopSeoreferencePluginLinksModel();
         $domain = wa()->getRouting()->getDomain(null, true);
-        $https = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : '';
-        $page = 'http' . (strtolower($https) == 'on' ? 's' : '') . '://';
-        $page .= wa()->getRouting()->getDomainUrl($domain) . '/' . wa()->getConfig()->getRequestUrl();
 
-        $result = $seoreferencelinks_model->getByField('page', $page);
+        $page = 'http://' . wa()->getRouting()->getDomainUrl($domain) . wa()->getConfig()->getRequestUrl(false, true);
+        $page_s = 'https://' . wa()->getRouting()->getDomainUrl($domain) . wa()->getConfig()->getRequestUrl(false, true);
+        
+        $sql = "SELECT * FROM `shop_seoreference_links` WHERE `page` LIKE '".$seoreferencelinks_model->escape($page)."' OR  `page` LIKE '".$seoreferencelinks_model->escape($page_s)."'";
+        $result = $seoreferencelinks_model->query($sql)->fetch();
+
         if ($result) {
             $link = $app_settings_model->get(array('shop', 'seoreference'), 'tpl_link');
             $link = str_replace('{link}', $result['link'], $link);
