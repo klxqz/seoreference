@@ -74,8 +74,8 @@ class shopSeoreferencePlugin extends shopPlugin {
                      */
                     $plugin_urls = wa()->event(array($this->app_id, 'sitemap'), $route);
                     if ($plugin_urls) {
-                        foreach ($plugin_urls as $urls) {
-                            foreach ($urls as $url) {
+                        foreach ($plugin_urls as $p_urls) {
+                            foreach ($p_urls as $url) {
                                 $urls[] = $url['loc'];
                             }
                         }
@@ -199,8 +199,8 @@ class shopSeoreferencePlugin extends shopPlugin {
 
         $page = 'http://' . wa()->getRouting()->getDomainUrl($domain) . wa()->getConfig()->getRequestUrl(false, true);
         $page_s = 'https://' . wa()->getRouting()->getDomainUrl($domain) . wa()->getConfig()->getRequestUrl(false, true);
-        
-        $sql = "SELECT * FROM `shop_seoreference_links` WHERE `page` LIKE '".$seoreferencelinks_model->escape($page)."' OR  `page` LIKE '".$seoreferencelinks_model->escape($page_s)."'";
+
+        $sql = "SELECT * FROM `shop_seoreference_links` WHERE `page` LIKE '" . $seoreferencelinks_model->escape($page) . "' OR  `page` LIKE '" . $seoreferencelinks_model->escape($page_s) . "'";
         $result = $seoreferencelinks_model->query($sql)->fetch();
 
         if ($result) {
