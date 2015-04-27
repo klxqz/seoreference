@@ -9,7 +9,7 @@ return array(
     'description' => 'Проводит Seo оптимизацию',
     'img' => 'img/seoreference.png',
     'vendor' => '985310',
-    'version' => '1.0.4',
+    'version' => '1.0.5',
     'rights' => false,
     'shop_settings' => true,
     'handlers' => array(

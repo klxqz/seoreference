@@ -8,7 +8,6 @@ class shopSeoreferencePlugin extends shopPlugin {
 
     protected $routing;
     protected $app_id;
-    protected $limit = 10000;
 
     public function getSiteMap($n = 1) {
         $this->app_id = wa()->getApp();
@@ -88,18 +87,6 @@ class shopSeoreferencePlugin extends shopPlugin {
                 // products
                 $c = $this->countProductsByRoute($route);
 
-                if ($count + $c <= ($n - 1) * $this->limit) {
-                    $count += $c;
-                    continue;
-                } else {
-                    if ($count >= ($n - 1) * $this->limit) {
-                        $offset = 0;
-                    } else {
-                        $offset = ($n - 1) * $this->limit - $count;
-                    }
-                    $count += $offset;
-                    $limit = min($this->limit, $n * $this->limit - $count);
-                }
 
                 $sql = "SELECT p.url, p.create_datetime, p.edit_datetime";
                 if (isset($route['url_type']) && $route['url_type'] == 2) {
@@ -113,7 +100,6 @@ class shopSeoreferencePlugin extends shopPlugin {
                 if (!empty($route['type_id'])) {
                     $sql .= ' AND p.type_id IN (i:type_id)';
                 }
-                $sql .= ' LIMIT ' . $offset . ',' . $limit;
                 $products = $product_model->query($sql, $route);
 
                 $count += $products->count();
@@ -132,9 +118,6 @@ class shopSeoreferencePlugin extends shopPlugin {
                     $urls[] = $url;
                 }
 
-                if ($count >= $n * $this->limit) {
-                    break;
-                }
             }
             $domains_urls[$domain] = $urls;
         }
